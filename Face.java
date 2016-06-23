@@ -6,14 +6,18 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.paint.Paint;
 import javafx.scene.layout.StackPane;
+import java.util.Map;
 
 public class Face{ //Faces do cubo
     private StackPane root; //StackPane
     private double posX, posY, cubiesSize;  //posicao da face e tamanho dos cubies
     private ColorButton[] cubies = new ColorButton[10]; //vetor de colorbuttons
     private int i; //indice
+    protected char symbols[][] = new char[3][3];
 
-    Face(StackPane r, double x, double y, double cS, ColorMenu cMenu){ //construtor, toda face recebe referencia do cMenu
+    //construtor, toda face recebe referencia do cMenu
+    Face(StackPane r, double x, double y, double cS, ColorMenu cMenu,
+        Map<Color,Character> colorToChar, Map<Character,Color> charToColor){
         this.root = r;      //seta os atributos
         this.posX = x;
         this.posY = y;
