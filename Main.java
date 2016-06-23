@@ -6,8 +6,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
-
-import java.util.Scanner;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 public class Main extends Application{
 
@@ -29,9 +29,18 @@ public class Main extends Application{
         cMenu = new ColorMenu(root, sidebar.getTranslateX(), 0, screenWidth/27); //Instancia menu de cores
         cube  = new Cube(root, screenWidth/27, screenWidth/-3, 0, cMenu);// Instancia o cubo
 
-        //Fazer uma classe para o botao solve
-        solve = new ColorButton(100., sidebar.getTranslateX(), 300., Color.GREEN);
+        //Botao de resolver
+        solve = new ColorButton(200.,100., sidebar.getTranslateX(), 200., Color.GREEN);
+        solve.button.setText("RESOLVER");
         root.getChildren().addAll(solve.shape, solve.button);
+        solve.button.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event){
+                Solver.solve(cube.up.symbols, cube.bottom.symbols, cube.left.symbols,
+                             cube.right.symbols, cube.front.symbols, cube.back.symbols);
+                solve.shape.setStroke(Color.RED);
+            }
+        });
 
 
         //Coloca cena, muda titulo da janela e mostra o palco

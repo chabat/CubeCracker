@@ -12,11 +12,11 @@ public class ColorButton{ // Botao de cor
     Color color;    //sua cor
     int amount; //quantia disponivel
 
-    ColorButton(double size, double x, double y, Color c){ //Construtor da classe
-        this.shape = new Rectangle(size, size); //instancia forma e botao
+    ColorButton(double sizeX, double sizeY, double x, double y, Color c){ //Construtor da classe
+        this.shape = new Rectangle(sizeX, sizeY); //instancia forma e botao
         this.button = new Button();
-        this.button.setMinWidth(size);          //seta tamanho do botao
-        this.button.setMinHeight(size);
+        this.button.setMinWidth(sizeX);          //seta tamanho do botao
+        this.button.setMinHeight(sizeY);
         this.shape.setTranslateX(x);            //seta posicao da forma e botao
         this.shape.setTranslateY(y);
         this.button.setTranslateX(x);

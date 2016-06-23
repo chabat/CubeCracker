@@ -40,7 +40,7 @@ public class Face{ //Faces do cubo
         for(i = 0; i < 3; i++)
             for(j = 0; j < 3; j++){ //itera sobre os cubies da face
                 this.symbols[i][j] = 'X';
-                this.cubies[i][j] = new ColorButton(cubiesSize, xCubies, yCubies, Color.GREY); //cria um botao
+                this.cubies[i][j] = new ColorButton(cubiesSize, cubiesSize, xCubies, yCubies, Color.GREY); //cria um botao
                 this.cubies[i][j].button.setOnAction(new EventHandler<ActionEvent>() { //trata o evento do clique
                     @Override
                     public void handle(ActionEvent event){

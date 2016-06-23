@@ -24,7 +24,7 @@ public class ColorMenu{ //Menu de escolha de cores
 
         double xBoxes = posX, yBoxes = posY;    //posicoes does botoes
         for(i = 1; i <= 6; i++){    //itera sobre os botoes
-            buttons[i] = new ColorButton(sizeBoxes, xBoxes, yBoxes, colors[i]); //instancia os botoes
+            buttons[i] = new ColorButton(sizeBoxes, sizeBoxes, xBoxes, yBoxes, colors[i]); //instancia os botoes
             this.paint = Color.GREY; //a cor inicialmente selecionada eh o cinza
             this.buttons[i].button.setOnAction(new EventHandler<ActionEvent>(){ //Trata os cliques
                 @Override
@@ -47,7 +47,7 @@ public class ColorMenu{ //Menu de escolha de cores
 
     public Paint getPaint(){return this.paint;} //getter da cor atualmente selecionada
     public ColorButton getPainter(Paint paint){ //retorna o botao da cor passada como parametro
-        ColorButton painter = new ColorButton(0,0,0,Color.RED);
+        ColorButton painter = new ColorButton(0,0,0,0,Color.RED);
         for(int i = 1; i <= 6; i++){    //itera sobre todos os botoes
             if(this.buttons[i].color == paint) painter =  this.buttons[i]; //se for o da cor passada salva
         }
