@@ -1,13 +1,11 @@
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import java.util.Map;
 
-public class Cube extends Rotations{  //Cubo
+public class Cube{  //Cubo
     StackPane root; //Stack pane
     double cubiesSize, cubeX, cubeY;    //Tamanho de cada cubie e posicao da face esquerda
     Face left, up, back, front, right, bottom; // as 6 faces
-    Map<Color, Character> colorToChar;
-    Map<Character, Color> charToColor;
+    ColorButton solve;
 
     Cube(StackPane r, double cS, double cX, double cY, ColorMenu cMenu){ //cosntrutor
         this.cubiesSize = cS;   //inicializa parametros
@@ -15,19 +13,12 @@ public class Cube extends Rotations{  //Cubo
         this.cubeY = cY;
         this.root = r;
         //Instancia cada face, uma proxima da outra,Cada face recebe a referencia do menu de cores
-        this.left = new Face(root, cubeX, cubeY, cubiesSize, cMenu, colorToChar, charToColor);
-        this.front = new Face(root, cubeX + 3 * cubiesSize, cubeY, cubiesSize, cMenu, colorToChar, charToColor);
-        this.bottom = new Face(root, cubeX + 3 * cubiesSize, cubeY - 3 * cubiesSize, cubiesSize, cMenu, colorToChar, charToColor);
-        this.up = new Face(root, cubeX + 3 * cubiesSize, cubeY + 3 * cubiesSize, cubiesSize, cMenu, colorToChar, charToColor);
-        this.right = new Face(root, cubeX + 6 * cubiesSize, cubeY, cubiesSize, cMenu, colorToChar, charToColor);
-        this.back = new Face(root, cubeX + 9 * cubiesSize, cubeY, cubiesSize, cMenu, colorToChar, charToColor);
-
-        this.colorToChar.put(Color.BLUE, 'B'); this.charToColor.put('B', Color.BLUE);
-        this.colorToChar.put(Color.WHITE, 'W'); this.charToColor.put('W', Color.WHITE);
-        this.colorToChar.put(Color.GREEN, 'G'); this.charToColor.put('G', Color.GREEN);
-        this.colorToChar.put(Color.RED, 'R'); this.charToColor.put('R', Color.RED);
-        this.colorToChar.put(Color.ORANGE, 'O'); this.charToColor.put('O', Color.ORANGE);
-        this.colorToChar.put(Color.YELLOW, 'Y'); this.charToColor.put('Y', Color.YELLOW);
+        this.left = new Face(root, cubeX, cubeY, cubiesSize, cMenu);
+        this.front = new Face(root, cubeX + 3 * cubiesSize, cubeY, cubiesSize, cMenu);
+        this.bottom = new Face(root, cubeX + 3 * cubiesSize, cubeY - 3 * cubiesSize, cubiesSize, cMenu);
+        this.up = new Face(root, cubeX + 3 * cubiesSize, cubeY + 3 * cubiesSize, cubiesSize, cMenu);
+        this.right = new Face(root, cubeX + 6 * cubiesSize, cubeY, cubiesSize, cMenu);
+        this.back = new Face(root, cubeX + 9 * cubiesSize, cubeY, cubiesSize, cMenu);
     }
 
     private void rotateFace(char[][] face, boolean antiClockWise){
@@ -190,5 +181,37 @@ public class Cube extends Rotations{  //Cubo
             copyLine(tmp, this.right.symbols, 0, 2, false, false, 1); //ok
             rotateFace(this.back.symbols, true);
         }
+    }
+
+    public void printCube(){
+        //Imprime topo
+        for(int i = 0; i < 3; i++){
+            System.out.print("    ");
+            for(int j = 0; j < 3; j++) System.out.print(this.up.symbols[i][j]);
+            System.out.print("\n");
+        }
+        //Imprime esquerda,frente, direita e tras
+        for(int i = 0; i < 3; i++){
+            for(int j = 0, k = 0; j < 15; j++){
+                if(j == 3 || j == 7 || j == 11){ System.out.print(" "); k = 0;}
+                else if(j < 3) System.out.print(this.left.symbols[i][k++]);
+                else if(j < 7) System.out.print(this.front.symbols[i][k++]);
+                else if(j < 11) System.out.print(this.right.symbols[i][k++]);
+                else if(j < 15) System.out.print(this.back.symbols[i][k++]);
+            }
+            System.out.print("\n");
+        }
+        //Imprime topo
+        for(int i = 0; i < 3; i++){
+            System.out.print("    ");
+            for(int j = 0; j < 3; j++) System.out.print(this.bottom.symbols[i][j]);
+            System.out.print("\n");
+        }
+        System.out.print("\n\n");
+    }
+
+    //TOTALMENTE PROVISORIO
+    public void solve(){
+        
     }
 }
