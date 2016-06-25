@@ -70,7 +70,7 @@ public class Face{ //Faces do cubo
             }
     }
 
-    public void update(){
+    public void updateFace(){
         for(int i = 0; i < 3; i++)
             for(j = 0; j < 3; j++)
                 this.cubies[i][j].shape.setFill(charToColor.get(this.symbols[i][j]));
