@@ -1,7 +1,8 @@
 import java.util.List;
 
 public class Solver{
-    Cube cube;
+    private Cube cube;
+    private static boolean debugPrints = true;
 
     Solver(Cube cube){
         this.cube = cube;
@@ -11,7 +12,10 @@ public class Solver{
 
         if (!solveCross(moveList)) return false;
         if (!solveFirstCorners(moveList)) return false;
+        if (!solveMiddleLayer(moveList)) return false;
+        if (!solveDownCross(moveList)) return false;
 
+        cube.update();
         return true;
     }
 
@@ -21,9 +25,12 @@ public class Solver{
         if(!solveZeroOne(moveList)){System.out.println("Erro cruz, peca ZeroOne"); return false;}
         if(!solveOneTwo(moveList)){System.out.println("Erro cruz, peca OneTwo"); return false;}
         if(!solveTwoOne(moveList)){System.out.println("Erro cruz, peca TwoOne"); return false;}
-        System.out.println("MOVIMENTOS ATE A CRUZ:");
-        for(String tmp: moveList) System.out.print("[" + tmp + "]");
-        System.out.println("\n");
+
+        if(debugPrints){
+            System.out.println("MOVIMENTOS ATE A CRUZ:");
+            for(String tmp: moveList) System.out.print("[" + tmp + "]");
+            System.out.println("\n");
+        }
         return true;
     }
     //Resolve a primeira peca da cruz
@@ -68,7 +75,7 @@ public class Solver{
             cube.rotate(cube, "B "); cube.rotate(cube, "B "); cube.rotate(cube, "L ");
             moveList.add("B "); moveList.add("B "); moveList.add("L ");
         }
-        else if(cube.front.symbols[1][2] == topColor && cube.right.symbols[0][1] == leftColor){
+        else if(cube.front.symbols[1][2] == topColor && cube.right.symbols[1][0] == leftColor){
             cube.rotate(cube, "F'"); cube.rotate(cube, "F'"); cube.rotate(cube, "L'");
             moveList.add("F'"); moveList.add("F'"); moveList.add("L'");
         }
@@ -99,7 +106,7 @@ public class Solver{
             cube.rotate(cube, "L "); cube.rotate(cube, "L ");
             moveList.add("L "); moveList.add("L ");
         }
-        else if(cube.down.symbols[1][2] == topColor && cube.back.symbols[2][1] == leftColor){
+        else if(cube.down.symbols[2][1] == topColor && cube.back.symbols[2][1] == leftColor){
             cube.rotate(cube, "D "); cube.rotate(cube, "L "); cube.rotate(cube, "L ");
             moveList.add("D "); moveList.add("L "); moveList.add("L ");
         }
@@ -396,7 +403,7 @@ public class Solver{
         }
         else if(cube.down.symbols[1][2] == topColor && cube.right.symbols[2][1] == frontColor){
             cube.rotate(cube, "D'"); cube.rotate(cube, "F "); cube.rotate(cube, "F ");
-            moveList.add("D'"); cube.rotate(cube, "F "); cube.rotate(cube, "F ");
+            moveList.add("D'"); moveList.add("F "); moveList.add("F ");
         }
 
         //Se esta na terceira camada e inversa
@@ -425,21 +432,35 @@ public class Solver{
     //Resolve os cantos da primeira camada
     private boolean solveFirstCorners(List<String> moveList){
         solveZeroZero(moveList);
-        System.out.println("MOVIMENTOS ATE O PRIMEIRO CANTO:");
-        for(String tmp: moveList) System.out.print("[" + tmp + "]");
-        System.out.println("\n");
+
+        if(debugPrints){
+            System.out.println("MOVIMENTOS ATE O PRIMEIRO CANTO:");
+            for(String tmp: moveList) System.out.print("[" + tmp + "]");
+            System.out.println("\n");
+        }
+
         solveZeroTwo(moveList);
-        System.out.println("MOVIMENTOS ATE O SEGUNDO CANTO:");
-        for(String tmp: moveList) System.out.print("[" + tmp + "]");
-        System.out.println("\n");
+
+        if(debugPrints){
+            System.out.println("MOVIMENTOS ATE O SEGUNDO CANTO:");
+            for(String tmp: moveList) System.out.print("[" + tmp + "]");
+            System.out.println("\n");
+        }
+
         solveTwoTwo(moveList);
-        System.out.println("MOVIMENTOS ATE O TERCEIRO CANTO:");
-        for(String tmp: moveList) System.out.print("[" + tmp + "]");
-        System.out.println("\n");
+
+        if(debugPrints){
+            System.out.println("MOVIMENTOS ATE O TERCEIRO CANTO:");
+            for(String tmp: moveList) System.out.print("[" + tmp + "]");
+            System.out.println("\n");
+        }
         solveTwoZero(moveList);
-        System.out.println("MOVIMENTOS ATE O QUARTO CANTO:");
-        for(String tmp: moveList) System.out.print("[" + tmp + "]");
-        System.out.println("\n");
+
+        if(debugPrints){
+            System.out.println("MOVIMENTOS ATE O QUARTO CANTO:");
+            for(String tmp: moveList) System.out.print("[" + tmp + "]");
+            System.out.println("\n");
+        }
         return true;
     }
     //Resolve a primeira peca de canto da primeira camada
@@ -668,6 +689,292 @@ public class Solver{
             moveList.add("L "); moveList.add("D "); moveList.add("L'"); moveList.add("D'");
         }
         System.out.println("Canto 2,0 resolvido com sucesso");
+        return true;
+    }
+
+    //Resolve a camada do meio
+    private boolean solveMiddleLayer(List<String> moveList){
+        if(!solveMiddleZeroZero(moveList)){System.out.println("Erro ao resolver primeira peca do meio"); return false;}
+
+        if(debugPrints){
+            System.out.println("MOVIMENTOS ATE A PRIMEIRA PECA DO MEIO:");
+            for(String tmp: moveList) System.out.print("[" + tmp + "]");
+            System.out.println("\n");
+        }
+
+        if(!solveMiddleZeroTwo(moveList)){System.out.println("Erro ao resolver a segunda peca do meio"); return false;}
+
+        if(debugPrints){
+            System.out.println("MOVIMENTOS ATE A SEGUNDA PECA DO MEIO:");
+            for(String tmp: moveList) System.out.print("[" + tmp + "]");
+            System.out.println("\n");
+        }
+
+        if(!solveMiddleTwoTwo(moveList)){System.out.println("Erro ao resolver a terceira peca do meio"); return false;}
+
+        if(debugPrints){
+            System.out.println("MOVIMENTOS ATE A TERCEIRA PECA DO MEIO:");
+            for(String tmp: moveList) System.out.print("[" + tmp + "]");
+            System.out.println("\n");
+        }
+
+        if(!solveMiddleTwoZero(moveList)){System.out.println("Erro ao resolver quarta peca do meio"); return false;}
+
+        if(debugPrints){
+            System.out.println("MOVIMENTOS ATE A QUARTA PECA DO MEIO:");
+            for(String tmp: moveList) System.out.print("[" + tmp + "]");
+            System.out.println("\n");
+        }
+
+        return true;
+    }
+    //Algoritmo do meio para face da esquerda
+    private void middleAlgorithmLeft(List<String> moveList, String dir){
+        if(dir == "right"){
+            cube.rotate(cube, "D "); cube.rotate(cube, "B "); cube.rotate(cube, "D'"); cube.rotate(cube, "B'");
+            cube.rotate(cube, "D'"); cube.rotate(cube, "L'"); cube.rotate(cube, "D "); cube.rotate(cube, "L ");
+            moveList.add("D "); moveList.add("B "); moveList.add("D'"); moveList.add("B'"); moveList.add("D'");
+            moveList.add("L'"); moveList.add("D "); moveList.add("L ");
+        }
+        else if(dir == "left"){
+            //D' F'D F D L D' L'
+            cube.rotate(cube, "D'"); cube.rotate(cube, "F'"); cube.rotate(cube, "D "); cube.rotate(cube, "F ");
+            cube.rotate(cube, "D "); cube.rotate(cube, "L "); cube.rotate(cube, "D'"); cube.rotate(cube, "L'");
+            moveList.add("D'"); moveList.add("F'"); moveList.add("D "); moveList.add("F "); moveList.add("D ");
+            moveList.add("L "); moveList.add("D'"); moveList.add("L'");
+        }
+    }
+    //Algoritmo do meio para face de tras
+    private void middleAlgorithmBack(List<String> moveList, String dir){
+        if(dir == "right"){
+            //D R D' R' D' B' D B
+            cube.rotate(cube, "D "); cube.rotate(cube, "R "); cube.rotate(cube, "D'"); cube.rotate(cube, "R'");
+            cube.rotate(cube, "D'"); cube.rotate(cube, "B'"); cube.rotate(cube, "D "); cube.rotate(cube, "B ");
+            moveList.add("D "); moveList.add("R "); moveList.add("D'"); moveList.add("R'"); moveList.add("D'");
+            moveList.add("B'"); moveList.add("D "); moveList.add("B ");
+        }
+        else if(dir == "left"){
+            //D' L' D  L D B D' B'
+            cube.rotate(cube, "D'"); cube.rotate(cube, "L'"); cube.rotate(cube, "D "); cube.rotate(cube, "L ");
+            cube.rotate(cube, "D "); cube.rotate(cube, "B "); cube.rotate(cube, "D'"); cube.rotate(cube, "B'");
+            moveList.add("D'"); moveList.add("L'"); moveList.add("D "); moveList.add("L "); moveList.add("D ");
+            moveList.add("B "); moveList.add("D'"); moveList.add("B'");
+        }
+    }
+    //Algoritmo do meio para face da direita
+    private void middleAlgorithmRight(List<String> moveList, String dir){
+        if(dir == "right"){
+            //D F D' F' D' R' D R
+            cube.rotate(cube, "D "); cube.rotate(cube, "F "); cube.rotate(cube, "D'"); cube.rotate(cube, "F'");
+            cube.rotate(cube, "D'"); cube.rotate(cube, "R'"); cube.rotate(cube, "D "); cube.rotate(cube, "R ");
+            moveList.add("D "); moveList.add("F "); moveList.add("D'"); moveList.add("F'"); moveList.add("D'");
+            moveList.add("R'"); moveList.add("D "); moveList.add("R ");
+        }
+        else if(dir == "left"){
+            //D' B' D B D R D' R'
+            cube.rotate(cube, "D'"); cube.rotate(cube, "B'"); cube.rotate(cube, "D "); cube.rotate(cube, "B ");
+            cube.rotate(cube, "D "); cube.rotate(cube, "R "); cube.rotate(cube, "D'"); cube.rotate(cube, "R'");
+            moveList.add("D'"); moveList.add("B'"); moveList.add("D "); moveList.add("B "); moveList.add("D ");
+            moveList.add("R "); moveList.add("D'"); moveList.add("R'");
+        }
+    }
+    //Algoritmo do meio para face da frente
+    private void middleAlgorithmFront(List<String> moveList, String dir){
+        if(dir == "right"){
+            //D L D' L' D' F' D F
+            cube.rotate(cube, "D "); cube.rotate(cube, "L "); cube.rotate(cube, "D'"); cube.rotate(cube, "L'");
+            cube.rotate(cube, "D'"); cube.rotate(cube, "F'"); cube.rotate(cube, "D "); cube.rotate(cube, "F ");
+            moveList.add("D "); moveList.add("L "); moveList.add("D'"); moveList.add("L'"); moveList.add("D'");
+            moveList.add("F'"); moveList.add("D "); moveList.add("F ");
+        }
+        else if(dir == "left"){
+            //D' R' D R D F D' F'
+            cube.rotate(cube, "D'"); cube.rotate(cube, "R'"); cube.rotate(cube, "D "); cube.rotate(cube, "R ");
+            cube.rotate(cube, "D "); cube.rotate(cube, "F "); cube.rotate(cube, "D'"); cube.rotate(cube, "F'");
+            moveList.add("D'"); moveList.add("R'"); moveList.add("D"); moveList.add("R "); moveList.add("D ");
+            moveList.add("F "); moveList.add("D'"); moveList.add("F'");
+        }
+    }
+    //Resolve a primeira peca de canto do meio
+    private boolean solveMiddleZeroZero(List<String> moveList){
+        System.out.println("Arrumando primeira peca do meio...");
+        char backColor = cube.back.symbols[1][1];
+        char leftColor = cube.left.symbols[1][1];
+
+        //Primeiro se estiver em algum dos cantos errados, tira do canto
+        //canto 0,0
+        if(cube.left.symbols[1][0] == backColor && cube.back.symbols[1][2] == leftColor) middleAlgorithmLeft(moveList, "right");
+        //canto 0,2
+        else if((cube.back.symbols[1][0] == backColor && cube.right.symbols[1][2] == leftColor) ||
+                (cube.back.symbols[1][0] == leftColor && cube.right.symbols[1][2] == backColor))
+            middleAlgorithmBack(moveList, "right");
+        //canto 2,2
+        else if((cube.front.symbols[1][2] == backColor && cube.right.symbols[1][0] == leftColor) ||
+                (cube.front.symbols[1][2] == leftColor && cube.right.symbols[1][0] == backColor))
+            middleAlgorithmRight(moveList, "right");
+        //Canto 2,0
+        else if((cube.front.symbols[1][0] == backColor && cube.left.symbols[1][2] == leftColor) ||
+                (cube.front.symbols[1][0] == leftColor && cube.left.symbols[1][2] == backColor) ){
+            middleAlgorithmLeft(moveList, "left");
+        }
+
+        while(!((cube.left.symbols[2][1] == leftColor && cube.down.symbols[1][0] == backColor) ||
+               (cube.back.symbols[2][1] == backColor && cube.down.symbols[2][1] == leftColor))){
+            cube.rotate(cube, "D "); moveList.add("D ");
+        }
+        if(cube.left.symbols[2][1] == leftColor && cube.down.symbols[1][0] == backColor) middleAlgorithmLeft(moveList, "right");
+        else if (cube.back.symbols[2][1] == backColor && cube.down.symbols[2][1] == leftColor) middleAlgorithmBack(moveList, "left");
+
+        if(cube.left.symbols[1][0] == leftColor && cube.back.symbols[1][2] == backColor)
+        {System.out.println("Primeira peca do meio resolvida com sucesso"); return true;}
+        return false;
+    }
+    //Resolve a segunda peca de canto do meio
+    private boolean solveMiddleZeroTwo(List<String> moveList){
+        System.out.println("Arrumando a segunda peca do meio...");
+        char rightColor = cube.right.symbols[1][1];
+        char backColor = cube.back.symbols[1][1];
+
+        //Se tiver em um dos cantos tira
+        //Se tiver no canto 0,2
+        if(cube.right.symbols[1][2] == backColor && cube.back.symbols[1][0] == rightColor) middleAlgorithmRight(moveList, "left");
+        //Se tiver no canto 2,2
+        else if((cube.front.symbols[1][2] == rightColor && cube.right.symbols[1][0] == backColor) ||
+            (cube.front.symbols[1][2] == backColor && cube.right.symbols[1][0] == rightColor))
+            middleAlgorithmFront(moveList, "left");
+        //Se tiver no canto 2,0
+        else if((cube.front.symbols[1][0] == backColor && cube.left.symbols[1][2] == rightColor) ||
+            (cube.front.symbols[1][0] == rightColor && cube.left.symbols[1][2] == backColor))
+            middleAlgorithmFront(moveList, "right");
+
+        while(!((cube.right.symbols[2][1] == rightColor && cube.down.symbols[1][2] == backColor) ||
+                (cube.back.symbols[2][1] == backColor && cube.down.symbols[2][1] == rightColor))){
+            cube.rotate(cube, "D "); moveList.add("D ");
+        }
+        if(cube.right.symbols[2][1] == rightColor && cube.down.symbols[1][2] == backColor) middleAlgorithmRight(moveList, "left");
+        else if (cube.back.symbols[2][1] == backColor && cube.down.symbols[2][1] == rightColor) middleAlgorithmBack(moveList, "right");
+
+        if(cube.right.symbols[1][2] == rightColor && cube.back.symbols[1][0] == backColor)
+        {System.out.println("Segunda peca do meio resolvida com sucesso"); return true;}
+        return false;
+    }
+    //Resolve a terceira peca de canto do meio
+    private boolean solveMiddleTwoTwo(List<String> moveList){
+        System.out.println("Arrumando a Terceira peca do meio...");
+        char frontColor = cube.front.symbols[1][1];
+        char rightColor = cube.right.symbols[1][1];
+
+        //Se estiver num canto, tira dele
+        //Se estiver no 2,2
+        if(cube.front.symbols[1][2] == rightColor && cube.right.symbols[1][0] == frontColor) middleAlgorithmFront(moveList, "left");
+        //Se estiver no 2,0
+        else if((cube.front.symbols[1][0] == frontColor && cube.left.symbols[1][2] == rightColor) ||
+                (cube.front.symbols[1][0] == rightColor && cube.left.symbols[1][2] == frontColor))
+            middleAlgorithmFront(moveList, "right");
+
+        while(!((cube.right.symbols[2][1] == rightColor && cube.down.symbols[1][2] == frontColor) ||
+                (cube.front.symbols[2][1] == frontColor && cube.down.symbols[0][1] == rightColor))){
+            cube.rotate(cube, "D "); moveList.add("D ");
+        }
+
+        if (cube.right.symbols[2][1] == rightColor && cube.down.symbols[1][2] == frontColor) middleAlgorithmRight(moveList, "right");
+        else if (cube.front.symbols[2][1] == frontColor && cube.down.symbols[0][1] == rightColor) middleAlgorithmFront(moveList,"left");
+
+        if(cube.right.symbols[1][0] == rightColor && cube.front.symbols[1][2] == frontColor)
+        {System.out.println("Terceira peca do meio resolvida com sucesso"); return true;}
+        return false;
+    }
+    //Resolve a quarta peca de canto do meio
+    private boolean solveMiddleTwoZero(List<String> moveList){
+        System.out.println("Arrumando a Quarta peca do meio...");
+        char frontColor = cube.front.symbols[1][1];
+        char leftColor = cube.left.symbols[1][1];
+
+        //Se tiver no canto, tira
+        if(cube.front.symbols[1][0] == leftColor && cube.left.symbols[1][2] == frontColor) middleAlgorithmLeft(moveList, "left");
+
+        while(!((cube.left.symbols[2][1] == leftColor && cube.down.symbols[1][0] == frontColor) ||
+                (cube.front.symbols[2][1] == frontColor && cube.down.symbols[0][1] == leftColor))){
+            cube.rotate(cube, "D "); moveList.add("D ");
+        }
+        if(cube.left.symbols[2][1] == leftColor && cube.down.symbols[1][0] == frontColor) middleAlgorithmLeft(moveList, "left");
+        else if(cube.front.symbols[2][1] == frontColor && cube.down.symbols[0][1] == leftColor) middleAlgorithmFront(moveList, "right");
+
+        if(cube.front.symbols[1][0] == frontColor && cube.left.symbols[1][2] == leftColor)
+        {System.out.println("Quarta peca do meio resolvida com sucesso"); return true;}
+        return false;
+    }
+
+    //Faz a cruz na camada de baixo
+    private boolean solveDownCross(List<String> moveList){
+        System.out.println("Resolvendo cruz de baixo...");
+        char downColor = cube.down.symbols[1][1];
+
+        //Enquanto nao existir cruz
+        while(!(downColor == cube.down.symbols[0][1] && downColor == cube.down.symbols[1][2] &&
+                downColor == cube.down.symbols[2][1] && downColor == cube.down.symbols[1][0])){
+
+            //Testa retas
+            if(downColor == cube.down.symbols[1][0] && downColor == cube.down.symbols[1][2]){
+                //F L D L' D' F'
+                cube.rotate(cube, "F "); cube.rotate(cube, "L "); cube.rotate(cube, "D "); cube.rotate(cube, "L'");
+                cube.rotate(cube, "D'"); cube.rotate(cube, "F'");
+                moveList.add("F "); moveList.add("L "); moveList.add("D "); moveList.add("L'"); moveList.add("D'");
+                moveList.add("F'");
+            }
+            else if(downColor == cube.down.symbols[0][1] && downColor == cube.down.symbols[2][1]){
+                //L B D B' D' L'
+                cube.rotate(cube, "L "); cube.rotate(cube, "B "); cube.rotate(cube, "D "); cube.rotate(cube, "B'");
+                cube.rotate(cube, "D'"); cube.rotate(cube, "L'");
+                moveList.add("L "); moveList.add("B "); moveList.add("D "); moveList.add("B'"); moveList.add("D'");
+                moveList.add("L'");
+            }
+
+            //Testa L's
+            //L 21 11 12
+            else if(cube.down.symbols[2][1] == downColor && cube.down.symbols[1][2] == downColor){
+                //F D L D' L' F'
+                cube.rotate(cube, "F "); cube.rotate(cube, "D "); cube.rotate(cube, "L "); cube.rotate(cube, "D'");
+                cube.rotate(cube, "L'"); cube.rotate(cube, "F'");
+                moveList.add("F "); moveList.add("D "); moveList.add("L "); moveList.add("D'"); moveList.add("L'");
+                moveList.add("F'");
+            }
+            //L 01 11 10
+            else if(cube.down.symbols[0][1] == downColor && cube.down.symbols[1][0] == downColor){
+                //B D R D' R' B'
+                cube.rotate(cube, "B "); cube.rotate(cube, "D "); cube.rotate(cube, "R "); cube.rotate(cube, "D'");
+                cube.rotate(cube, "R'"); cube.rotate(cube, "B'");
+                moveList.add("B "); moveList.add("D "); moveList.add("R "); moveList.add("D'"); moveList.add("R'");
+                moveList.add("B'");
+            }
+            //L 21 11 10
+            else if(cube.down.symbols[2][1] == downColor && cube.down.symbols[1][0] == downColor){
+                // R D F D' F' R'
+                cube.rotate(cube, "R "); cube.rotate(cube, "D "); cube.rotate(cube, "F "); cube.rotate(cube, "D'");
+                cube.rotate(cube, "F'"); cube.rotate(cube, "R'");
+                moveList.add("R "); moveList.add("D "); moveList.add("F "); moveList.add("D'");
+                moveList.add("F'"); moveList.add("R'");
+            }
+            //L 01 11 12
+            else if(cube.down.symbols[0][1] == downColor && cube.down.symbols[1][2] == downColor){
+                //L D B D' B' L'
+                cube.rotate(cube, "L "); cube.rotate(cube, "D "); cube.rotate(cube, "B "); cube.rotate(cube, "D'");
+                cube.rotate(cube, "B'"); cube.rotate(cube, "L'");
+                moveList.add("L "); moveList.add("D "); moveList.add("B "); moveList.add("D'"); moveList.add("B'");
+                moveList.add("L'");
+            }
+
+            //se nao, aplica o algoritmo do ponto
+            else{
+                //F D L D' L' F'
+                cube.rotate(cube, "F "); cube.rotate(cube, "D "); cube.rotate(cube, "L "); cube.rotate(cube, "D'");
+                cube.rotate(cube, "L'"); cube.rotate(cube, "F'");
+                moveList.add("F "); moveList.add("D "); moveList.add("L "); moveList.add("D'"); moveList.add("L'");
+                moveList.add("F'");
+            }
+        }
+
+        System.out.println("Cruz de baixo resolvida com sucesso");
         return true;
     }
 }

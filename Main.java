@@ -53,7 +53,7 @@ public class Main extends Application{
             public void handle(ActionEvent event){
                 solve.shape.setStroke(Color.RED);
                 solver.solve(moveList);
-                for(String tmp: moveList) System.out.print("[" + tmp + "] ");
+                for(String tmp: moveList) System.out.print("[" + tmp + "]");
             }
 
         });
