@@ -10,12 +10,8 @@ public class Solver{
     public boolean solve(List<String> moveList){
 
         if (!solveCross(moveList)) return false;
-
-System.out.println("CROSS MOVES:");
-for(String tmp: moveList) System.out.print("[" + tmp + "]");
-System.out.println("\n");
-
         if (!solveFirstCorners(moveList)) return false;
+
         return true;
     }
 
@@ -25,6 +21,9 @@ System.out.println("\n");
         if(!solveZeroOne(moveList)){System.out.println("Erro cruz, peca ZeroOne"); return false;}
         if(!solveOneTwo(moveList)){System.out.println("Erro cruz, peca OneTwo"); return false;}
         if(!solveTwoOne(moveList)){System.out.println("Erro cruz, peca TwoOne"); return false;}
+        System.out.println("MOVIMENTOS ATE A CRUZ:");
+        for(String tmp: moveList) System.out.print("[" + tmp + "]");
+        System.out.println("\n");
         return true;
     }
     //Resolve a primeira peca da cruz
@@ -268,7 +267,7 @@ System.out.println("\n");
             cube.rotate(cube, "F "); cube.rotate(cube, "F "); cube.rotate(cube, "R ");
             moveList.add("F "); moveList.add("F "); moveList.add("R ");
         }
-        else if(cube.back.symbols[1][2] == topColor && cube.right.symbols[1][0] == rightColor){
+        else if(cube.back.symbols[1][2] == topColor && cube.left.symbols[1][0] == rightColor){
             cube.rotate(cube, "U'"); cube.rotate(cube, "U'"); cube.rotate(cube, "L "); cube.rotate(cube, "U ");
             cube.rotate(cube, "U ");
             moveList.add("U'"); moveList.add("U'"); moveList.add("L "); moveList.add("U "); moveList.add("U ");
@@ -412,8 +411,7 @@ System.out.println("\n");
         else if(cube.down.symbols[2][1] == frontColor && cube.back.symbols[2][1] == topColor){
             cube.rotate(cube, "D "); cube.rotate(cube, "U "); cube.rotate(cube, "L'"); cube.rotate(cube, "U'");
             cube.rotate(cube, "F ");
-            moveList.add("D "); cube.rotate(cube, "U "); cube.rotate(cube, "L'"); cube.rotate(cube, "U'");
-            cube.rotate(cube, "F ");
+            moveList.add("D "); moveList.add("U "); moveList.add("L'"); moveList.add("U'"); moveList.add("F ");
         }
         else if(cube.down.symbols[1][2] == frontColor && cube.right.symbols[2][1] == topColor){
             cube.rotate(cube, "U'"); cube.rotate(cube, "R "); cube.rotate(cube, "U "); cube.rotate(cube, "F'");
@@ -426,8 +424,22 @@ System.out.println("\n");
 
     //Resolve os cantos da primeira camada
     private boolean solveFirstCorners(List<String> moveList){
-        if(!solveZeroZero(moveList)){System.out.println("Erro nos primeiros cantos, peca ZeroZero"); return false;}
-
+        solveZeroZero(moveList);
+        System.out.println("MOVIMENTOS ATE O PRIMEIRO CANTO:");
+        for(String tmp: moveList) System.out.print("[" + tmp + "]");
+        System.out.println("\n");
+        solveZeroTwo(moveList);
+        System.out.println("MOVIMENTOS ATE O SEGUNDO CANTO:");
+        for(String tmp: moveList) System.out.print("[" + tmp + "]");
+        System.out.println("\n");
+        solveTwoTwo(moveList);
+        System.out.println("MOVIMENTOS ATE O TERCEIRO CANTO:");
+        for(String tmp: moveList) System.out.print("[" + tmp + "]");
+        System.out.println("\n");
+        solveTwoZero(moveList);
+        System.out.println("MOVIMENTOS ATE O QUARTO CANTO:");
+        for(String tmp: moveList) System.out.print("[" + tmp + "]");
+        System.out.println("\n");
         return true;
     }
     //Resolve a primeira peca de canto da primeira camada
@@ -439,15 +451,15 @@ System.out.println("\n");
         //Primeiro move para baixo de onde tem que ir
 
         //Se esta na primeira camada
-        //Se esta no lugar, 0,0
+        /*//Se esta no lugar, 0,0
         if( (cube.up.symbols[0][0] == backColor && cube.left.symbols[0][0] == topColor && cube.back.symbols[0][2] == leftColor) ||
             (cube.up.symbols[0][0] == leftColor && cube.left.symbols[0][0] == backColor && cube.back.symbols[0][2] == topColor)){
 
             cube.rotate(cube, "L'"); cube.rotate(cube, "D "); cube.rotate(cube, "L ");
             moveList.add("L'"); moveList.add("D "); moveList.add("L ");
-        }
+        }*/
         //Se esta no 0,2
-        else if((cube.up.symbols[0][2] == leftColor && cube.right.symbols[0][2] == topColor && cube.back.symbols[0][0] == backColor) ||
+        if((cube.up.symbols[0][2] == leftColor && cube.right.symbols[0][2] == topColor && cube.back.symbols[0][0] == backColor) ||
                  (cube.up.symbols[0][2] == backColor && cube.right.symbols[0][2] == leftColor && cube.back.symbols[0][0] == topColor) ||
                  (cube.up.symbols[0][2] == topColor && cube.right.symbols[0][2] == backColor && cube.back.symbols[0][0] == leftColor)){
 
@@ -473,9 +485,9 @@ System.out.println("\n");
 
         //Se esta na segunda camada
         //Se esta no 0,2
-        else if((cube.down.symbols[2][2] == leftColor && cube.right.symbols[2][2] == backColor && cube.back.symbols[0][2] == topColor) ||
-                (cube.down.symbols[2][2] == topColor && cube.right.symbols[2][2] == leftColor && cube.back.symbols[0][2] == backColor) ||
-                (cube.down.symbols[2][2] == backColor && cube.right.symbols[2][2] == topColor && cube.back.symbols[0][2] == leftColor)){
+        else if((cube.down.symbols[2][2] == leftColor && cube.right.symbols[2][2] == backColor && cube.back.symbols[2][0] == topColor) ||
+                (cube.down.symbols[2][2] == topColor && cube.right.symbols[2][2] == leftColor && cube.back.symbols[2][0] == backColor) ||
+                (cube.down.symbols[2][2] == backColor && cube.right.symbols[2][2] == topColor && cube.back.symbols[2][0] == leftColor)){
 
             cube.rotate(cube, "D "); moveList.add("D ");
         }
@@ -492,14 +504,170 @@ System.out.println("\n");
                 (cube.down.symbols[0][0] == backColor && cube.left.symbols[2][2] == topColor && cube.front.symbols[2][0] == leftColor) ||
                 (cube.down.symbols[0][0] == topColor && cube.left.symbols[2][2] == leftColor && cube.front.symbols[2][0] == backColor)){
 
-                cube.rotate(cube, "U'"); moveList.add("U'");
+                cube.rotate(cube, "D'"); moveList.add("D'");
         }
 
+        //Aplica o algoritmo ate ficar na posicao correta
         while(!(cube.up.symbols[0][0] == topColor && cube.left.symbols[0][0] == leftColor && cube.back.symbols[0][2] == backColor)){
             cube.rotate(cube, "L'"); cube.rotate(cube, "D'"); cube.rotate(cube, "L "); cube.rotate(cube, "D ");
             moveList.add("L'"); moveList.add("D'"); moveList.add("L "); moveList.add("D ");
         }
         System.out.println("Canto 0,0 resolvido com sucesso");
+        return true;
+    }
+    //Resolve a segunda peca de canto da primeira camada
+    private boolean solveZeroTwo(List<String> moveList){
+        System.out.println("Resolvendo segundo canto 0,2");
+        char topColor = cube.up.symbols[1][1];
+        char rightColor = cube.right.symbols[1][1];
+        char backColor = cube.back.symbols[1][1];
+
+        //Primeiro move para baixo de onde tem que ir
+        /*//Se estiver na primeira camada 0,2
+        if((cube.up.symbols[0][2] == rightColor && cube.right.symbols[0][2] == backColor && cube.back.symbols[0][0] == topColor) ||
+          (cube.up.symbols[0][2] == backColor && cube.right.symbols[0][2] == topColor && cube.back.symbols[0][0] == rightColor)){
+              //R D R' D'
+              cube.rotate(cube, "R "); cube.rotate(cube, "D "); cube.rotate(cube, "R'"); cube.rotate(cube, "D'");
+              moveList.add("R "); moveList.add("D "); moveList.add("R'"); moveList.add("D'");
+        }*/
+        //Se estiver na primeira camada 2,2
+        if((cube.up.symbols[2][2] == rightColor && cube.front.symbols[0][2] == backColor && cube.right.symbols[0][0] == topColor) ||
+           (cube.up.symbols[2][2] == backColor && cube.front.symbols[0][2] == topColor && cube.right.symbols[0][0] == rightColor) ||
+           (cube.up.symbols[2][2] == topColor && cube.front.symbols[0][2] == rightColor && cube.right.symbols[0][0] == backColor)){
+
+            cube.rotate(cube, "R'"); cube.rotate(cube, "D "); cube.rotate(cube, "D "); cube.rotate(cube, "R ");
+            cube.rotate(cube, "D'");
+            moveList.add("R'"); moveList.add("D "); moveList.add("D "); moveList.add("R "); moveList.add("D'");
+        }
+        //Se estiver na primeira camada 2,0
+        else if((cube.up.symbols[2][0] == backColor && cube.front.symbols[0][0] == rightColor && cube.left.symbols[0][2] == topColor) ||
+                (cube.up.symbols[2][0] == rightColor && cube.front.symbols[0][0] == topColor && cube.left.symbols[0][2] == backColor) ||
+                (cube.up.symbols[2][0] == topColor && cube.front.symbols[0][0] == backColor && cube.left.symbols[0][2] == rightColor)){
+
+            cube.rotate(cube, "L "); cube.rotate(cube, "D "); cube.rotate(cube, "D "); cube.rotate(cube, "L'");
+            moveList.add("L "); moveList.add("D "); moveList.add("D "); moveList.add("L'");
+        }
+
+        //Se estiver na segunda camada 0,0
+        else if((cube.down.symbols[2][0] == backColor && cube.left.symbols[2][0] == topColor && cube.back.symbols[2][2] == rightColor) ||
+                (cube.down.symbols[2][0] == topColor && cube.left.symbols[2][0] == rightColor && cube.back.symbols[2][2] == backColor) ||
+                (cube.down.symbols[2][0] == rightColor && cube.left.symbols[2][0] == backColor && cube.back.symbols[2][2] == topColor)){
+
+            cube.rotate(cube, "D'"); moveList.add("D'");
+        }
+        //Se estiver na segunda camada 2,2
+        else if((cube.down.symbols[0][2] == rightColor && cube.front.symbols[2][2] == topColor && cube.right.symbols[2][0] == backColor) ||
+                (cube.down.symbols[0][2] == backColor && cube.front.symbols[2][2] == rightColor && cube.right.symbols[2][0] == topColor) ||
+                (cube.down.symbols[0][2] == topColor && cube.front.symbols[2][2] == backColor && cube.right.symbols[2][0] == rightColor)){
+
+            cube.rotate(cube, "D "); moveList.add("D ");
+        }
+        //Se estiver na segunda camada 2,0
+        else if((cube.down.symbols[0][0] == topColor && cube.front.symbols[2][0] == rightColor && cube.left.symbols[2][2] == backColor) ||
+                (cube.down.symbols[0][0] == rightColor && cube.front.symbols[2][0] == backColor && cube.left.symbols[2][2] == topColor) ||
+                (cube.down.symbols[0][0] == backColor && cube.front.symbols[2][0] == topColor && cube.left.symbols[2][2] == rightColor)){
+
+                cube.rotate(cube,"D "); cube.rotate(cube,"D "); moveList.add("D "); moveList.add("D ");
+        }
+
+        //Entao aplica o algoritmo ate ficar correto
+        while(!(cube.up.symbols[0][2] == topColor && cube.right.symbols[0][2] == rightColor && cube.back.symbols[0][0] == backColor)){
+            cube.rotate(cube, "B'"); cube.rotate(cube, "D'"); cube.rotate(cube, "B "); cube.rotate(cube, "D ");
+            moveList.add("B'"); moveList.add("D'"); moveList.add("B "); moveList.add("D ");
+        }
+
+        System.out.println("Canto 0,2 resolvido com sucesso");
+        return true;
+    }
+    //Resolve a terceira peca de canto da primeira camada
+    private boolean solveTwoTwo(List<String> moveList){
+        System.out.println("Resolvendo terceiro canto 2,2");
+        char topColor = cube.up.symbols[1][1];
+        char frontColor = cube.front.symbols[1][1];
+        char rightColor = cube.right.symbols[1][1];
+        //Primeiro, move para baixo de onde deve ir
+
+        /*//Se estiver na primeira camada 2,2
+        if((cube.up.symbols[2][2] == frontColor && cube.front.symbols[0][2] == rightColor && cube.right.symbols[0][0] == topColor) ||
+           (cube.up.symbols[2][2] == rightColor && cube.front.symbols[0][2] == topColor && cube.right.symbols[0][0] == frontColor)){
+
+               cube.rotate(cube, "R'"); cube.rotate(cube, "D'"); cube.rotate(cube, "R "); cube.rotate(cube, "D ");
+               moveList.add("R'"); moveList.add("D'"); moveList.add("R "); moveList.add("D ");
+        }*/
+        //Se estiver na primeira camada 2,0
+        if((cube.up.symbols[2][0] == topColor && cube.front.symbols[0][0] == rightColor && cube.left.symbols[0][2] == frontColor) ||
+                (cube.up.symbols[2][0] == rightColor && cube.front.symbols[0][0] == frontColor && cube.left.symbols[0][2] == topColor) ||
+                (cube.up.symbols[2][0] == frontColor && cube.front.symbols[0][0] == topColor && cube.left.symbols[0][2] == rightColor)){
+
+            cube.rotate(cube, "L "); cube.rotate(cube, "D "); cube.rotate(cube, "L'");
+            moveList.add("L "); moveList.add("D "); moveList.add("L'");
+        }
+
+        //Se estiver na terceira camada 0,0
+        else if((cube.down.symbols[2][0] == topColor && cube.left.symbols[2][0] == frontColor && cube.back.symbols[2][2] == rightColor) ||
+                (cube.down.symbols[2][0] == rightColor && cube.left.symbols[2][0] == topColor && cube.back.symbols[2][2] == frontColor) ||
+                (cube.down.symbols[2][0] == frontColor && cube.left.symbols[2][0] == rightColor && cube.back.symbols[2][2] == topColor)){
+            cube.rotate(cube, "D "); cube.rotate(cube, "D ");
+            moveList.add("D "); moveList.add("D ");
+        }
+        //Se estiver na terceira camada 0,2
+        else if((cube.down.symbols[2][2] == frontColor && cube.right.symbols[2][2] == topColor && cube.back.symbols[2][0] == rightColor) ||
+                (cube.down.symbols[2][2] == topColor && cube.right.symbols[2][2] == rightColor && cube.back.symbols[2][0] == frontColor) ||
+                (cube.down.symbols[2][2] == rightColor && cube.right.symbols[2][2] == frontColor && cube.back.symbols[2][0] == topColor)){
+            cube.rotate(cube, "D'"); moveList.add("D'");
+        }
+        //Se estiver na terceira camada 2,0
+        else if((cube.down.symbols[0][0] == rightColor && cube.front.symbols[2][0] == topColor && cube.left.symbols[2][2] == frontColor) ||
+                (cube.down.symbols[0][0] == frontColor && cube.front.symbols[2][0] == rightColor && cube.left.symbols[2][2] == topColor) ||
+                (cube.down.symbols[0][0] == topColor && cube.front.symbols[2][0] == frontColor && cube.left.symbols[2][2] == rightColor)){
+
+                cube.rotate(cube, "D "); moveList.add("D ");
+        }
+
+        //Entao, aplica o algoritmo ate corrigir
+        while(!(cube.up.symbols[2][2] == topColor && cube.front.symbols[0][2] == frontColor && cube.right.symbols[0][0] == rightColor)){
+            cube.rotate(cube, "R'"); cube.rotate(cube, "D'"); cube.rotate(cube, "R "); cube.rotate(cube, "D ");
+            moveList.add("R'"); moveList.add("D'"); moveList.add("R "); moveList.add("D ");
+        }
+
+        System.out.println("Canto 2,2 resolvido com sucesso");
+        return true;
+    }
+    //Resolve a quarta peca do canto da primeira camada
+    private boolean solveTwoZero(List<String> moveList){
+        System.out.println("Resolvendo quarto canto 2,0");
+        char topColor = cube.up.symbols[1][1];
+        char frontColor = cube.front.symbols[1][1];
+        char leftColor = cube.left.symbols[1][1];
+        //Primeiro move para baixo de onde deve ir
+
+        //Se estiver na segunda camada 0,0
+        if((cube.down.symbols[2][0] == frontColor && cube.left.symbols[2][0] == topColor && cube.back.symbols[2][2] == leftColor) ||
+           (cube.down.symbols[2][0] == leftColor && cube.left.symbols[2][0] == frontColor && cube.back.symbols[2][2] == topColor) ||
+           (cube.down.symbols[2][0] == topColor && cube.left.symbols[2][0] == leftColor && cube.back.symbols[2][2] == frontColor)){
+
+               cube.rotate(cube,"D "); moveList.add("D ");
+        }
+        //Se estiver na segunda camada 0,2
+        else if((cube.down.symbols[2][2] == topColor && cube.right.symbols[2][2] == frontColor && cube.back.symbols[2][0] == leftColor) ||
+                (cube.down.symbols[2][2] == frontColor && cube.right.symbols[2][2] == leftColor && cube.back.symbols[2][0] == topColor) ||
+                (cube.down.symbols[2][2] == leftColor && cube.right.symbols[2][2] == topColor && cube.back.symbols[2][0] == frontColor)){
+
+            cube.rotate(cube, "D "); cube.rotate(cube, "D "); moveList.add("D "); moveList.add("D ");
+        }
+        //Se estiver na segunda camada 2,2
+        else if((cube.down.symbols[0][2] == leftColor && cube.right.symbols[2][0] == frontColor && cube.front.symbols[2][2] == topColor) ||
+                (cube.down.symbols[0][2] == topColor && cube.right.symbols[2][0] == leftColor && cube.front.symbols[2][2] == frontColor) ||
+                (cube.down.symbols[0][2] == frontColor && cube.right.symbols[2][0] == topColor && cube.front.symbols[2][2] == leftColor)){
+
+            cube.rotate(cube, "D'"); moveList.add("D'");
+        }
+
+        while(!(cube.up.symbols[2][0] == topColor && cube.front.symbols[0][0] == frontColor && cube.left.symbols[0][2] == leftColor)){
+            cube.rotate(cube, "L "); cube.rotate(cube, "D "); cube.rotate(cube, "L'"); cube.rotate(cube, "D'");
+            moveList.add("L "); moveList.add("D "); moveList.add("L'"); moveList.add("D'");
+        }
+        System.out.println("Canto 2,0 resolvido com sucesso");
         return true;
     }
 }
