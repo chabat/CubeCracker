@@ -14,6 +14,9 @@ public class Solver{
         if (!solveFirstCorners(moveList)) return false;
         if (!solveMiddleLayer(moveList)) return false;
         if (!solveDownCross(moveList)) return false;
+        if (!solveDownFace(moveList)) return false;
+        if (!solveDownCorners(moveList)) return false;
+        if (!solveDownEdges(moveList)) return false;
 
         cube.update();
         return true;
@@ -819,7 +822,8 @@ public class Solver{
         }
 
         while(!((cube.left.symbols[2][1] == leftColor && cube.down.symbols[1][0] == backColor) ||
-               (cube.back.symbols[2][1] == backColor && cube.down.symbols[2][1] == leftColor))){
+               (cube.back.symbols[2][1] == backColor && cube.down.symbols[2][1] == leftColor)  ||
+               cube.left.symbols[1][0] == leftColor && cube.back.symbols[1][2] == backColor)){
             cube.rotate(cube, "D "); moveList.add("D ");
         }
         if(cube.left.symbols[2][1] == leftColor && cube.down.symbols[1][0] == backColor) middleAlgorithmLeft(moveList, "right");
@@ -848,7 +852,8 @@ public class Solver{
             middleAlgorithmFront(moveList, "right");
 
         while(!((cube.right.symbols[2][1] == rightColor && cube.down.symbols[1][2] == backColor) ||
-                (cube.back.symbols[2][1] == backColor && cube.down.symbols[2][1] == rightColor))){
+                (cube.back.symbols[2][1] == backColor && cube.down.symbols[2][1] == rightColor) ||
+                (cube.right.symbols[1][2] == rightColor && cube.back.symbols[1][0] == backColor))){
             cube.rotate(cube, "D "); moveList.add("D ");
         }
         if(cube.right.symbols[2][1] == rightColor && cube.down.symbols[1][2] == backColor) middleAlgorithmRight(moveList, "left");
@@ -873,7 +878,8 @@ public class Solver{
             middleAlgorithmFront(moveList, "right");
 
         while(!((cube.right.symbols[2][1] == rightColor && cube.down.symbols[1][2] == frontColor) ||
-                (cube.front.symbols[2][1] == frontColor && cube.down.symbols[0][1] == rightColor))){
+                (cube.front.symbols[2][1] == frontColor && cube.down.symbols[0][1] == rightColor) ||
+                (cube.right.symbols[1][0] == rightColor && cube.front.symbols[1][2] == frontColor))){
             cube.rotate(cube, "D "); moveList.add("D ");
         }
 
@@ -894,7 +900,8 @@ public class Solver{
         if(cube.front.symbols[1][0] == leftColor && cube.left.symbols[1][2] == frontColor) middleAlgorithmLeft(moveList, "left");
 
         while(!((cube.left.symbols[2][1] == leftColor && cube.down.symbols[1][0] == frontColor) ||
-                (cube.front.symbols[2][1] == frontColor && cube.down.symbols[0][1] == leftColor))){
+                (cube.front.symbols[2][1] == frontColor && cube.down.symbols[0][1] == leftColor) ||
+                (cube.front.symbols[1][0] == frontColor && cube.left.symbols[1][2] == leftColor))){
             cube.rotate(cube, "D "); moveList.add("D ");
         }
         if(cube.left.symbols[2][1] == leftColor && cube.down.symbols[1][0] == frontColor) middleAlgorithmLeft(moveList, "left");
@@ -976,5 +983,298 @@ public class Solver{
 
         System.out.println("Cruz de baixo resolvida com sucesso");
         return true;
+    }
+    //Deixa tudo da mesma cor embaixo
+    private boolean solveDownFace(List<String> moveList){
+        if(debugPrints){
+            System.out.println("MOVIMENTOS ATE A CRUZ DE BAIXO:");
+            for(String tmp: moveList) System.out.print("[" + tmp + "]");
+            System.out.println("\n");
+        }
+
+        char downColor = cube.down.symbols[1][1];
+        System.out.println("Resolvendo face de baixo...");
+
+        //Enquanto todos os cantos nao estao no lugar
+        while(countDownCorners() != 4){
+            //Se nao ha cantos feitos
+            if(countDownCorners() == 0 ){
+                if(cube.front.symbols[2][0] == downColor || cube.front.symbols[2][2] == downColor) downAlgorithm(moveList, "front");
+                else if(cube.left.symbols[2][0] == downColor || cube.left.symbols[2][2] == downColor) downAlgorithm(moveList, "left");
+                else if(cube.back.symbols[2][0] == downColor || cube.down.symbols[2][2] == downColor) downAlgorithm(moveList, "back");
+                else if(cube.right.symbols[2][0] == downColor || cube.right.symbols[2][2] == downColor) downAlgorithm(moveList, "right");
+            }
+            //Se ha dois cantos feitos
+            else if(countDownCorners() > 1){
+                if(cube.front.symbols[2][2] == downColor) downAlgorithm(moveList, "front");
+                else if(cube.left.symbols[2][2] == downColor) downAlgorithm(moveList, "left");
+                else if(cube.down.symbols[2][2] == downColor) downAlgorithm(moveList, "back");
+                else if(cube.right.symbols[2][2] == downColor) downAlgorithm(moveList, "right");
+            }
+            //Se ha um canto feito
+            else if(countDownCorners() == 1){
+                if(cube.down.symbols[0][0] == downColor) downAlgorithm(moveList, "left");
+                else if(cube.down.symbols[0][2] == downColor) downAlgorithm(moveList, "front");
+                else if(cube.down.symbols[2][0] == downColor) downAlgorithm(moveList, "back");
+                else if(cube.down.symbols[2][2] == downColor) downAlgorithm(moveList, "right");
+            }
+        }
+        System.out.println("Face de baixo resolvida com sucesso");
+        return true;
+    }
+    //Algoritmo para deixar tudo da mesma cor embaixo
+    private void downAlgorithm(List<String> moveList, String dir){
+        if(dir == "front"){
+            //L D L' D L D D L'
+            cube.rotate(cube, "L "); cube.rotate(cube, "D "); cube.rotate(cube, "L'"); cube.rotate(cube, "D ");
+            cube.rotate(cube, "L "); cube.rotate(cube, "D "); cube.rotate(cube, "D "); cube.rotate(cube, "L'");
+            moveList.add("L "); moveList.add("D "); moveList.add("L'"); moveList.add("D ");
+            moveList.add("L "); moveList.add("D "); moveList.add("D "); moveList.add("L'");
+        }
+        else if(dir == "left"){
+            //B D B' D B D D B' -- B D B' D B D D B'
+            cube.rotate(cube, "B "); cube.rotate(cube, "D "); cube.rotate(cube, "B'"); cube.rotate(cube, "D ");
+            cube.rotate(cube, "B "); cube.rotate(cube, "D "); cube.rotate(cube, "D "); cube.rotate(cube, "B'");
+            moveList.add("B "); moveList.add("D "); moveList.add("B'"); moveList.add("D "); moveList.add("B ");
+            moveList.add("D "); moveList.add("D "); moveList.add("B'");
+        }
+        else if(dir == "back"){
+            //R D R' D R D D R'
+            cube.rotate(cube, "R "); cube.rotate(cube, "D "); cube.rotate(cube, "R'"); cube.rotate(cube, "D ");
+            cube.rotate(cube, "R "); cube.rotate(cube, "D "); cube.rotate(cube, "D "); cube.rotate(cube, "R'");
+            moveList.add("R "); moveList.add("D "); moveList.add("R'"); moveList.add("D "); moveList.add("R ");
+            moveList.add("D "); moveList.add("D "); moveList.add("R'");
+        }
+        else if(dir == "right"){
+            //F D F' D F D D F'
+            cube.rotate(cube, "F "); cube.rotate(cube, "D "); cube.rotate(cube, "F'"); cube.rotate(cube, "D ");
+            cube.rotate(cube, "F "); cube.rotate(cube, "D "); cube.rotate(cube, "D "); cube.rotate(cube, "F'");
+            moveList.add("F "); moveList.add("D "); moveList.add("F'"); moveList.add("D "); moveList.add("F ");
+            moveList.add("D "); moveList.add("D "); moveList.add("F'");
+        }
+    }
+    //Conta quantos cantos azuis tem na face de baixo
+    private int countDownCorners(){
+        char downColor = cube.down.symbols[1][1];
+        int resp = 0;
+        if(cube.down.symbols[0][0] == downColor) resp++;
+        if(cube.down.symbols[0][2] == downColor) resp++;
+        if(cube.down.symbols[2][0] == downColor) resp++;
+        if(cube.down.symbols[2][2] == downColor) resp++;
+        return resp;
+    }
+
+    //Arruma os cantos na camada de baixo
+    private boolean solveDownCorners(List<String> moveList){
+
+        if(debugPrints){
+            System.out.println("MOVIMENTOS ATE A FACE DE BAIXO:");
+            for(String tmp: moveList) System.out.print("[" + tmp + "]");
+            System.out.println("\n");
+        }
+
+        System.out.println("Resolvendo cantos inferiores...");
+        while(countCorrectCorners() < 4){
+
+            //cube.printCube(cube);
+
+            //Gira ate ter 2 cantos corretos
+            while(countCorrectCorners() < 2){cube.rotate(cube, "D "); moveList.add("D ");}
+            System.out.println(countCorrectCorners() + " Cantos corretos");
+            //Se os cantos corretos forem vizinhos
+            //00 e 02
+            if(checkCorrectCorner("00") && checkCorrectCorner("02")){downCornersAlgorithm(moveList, "front"); System.out.println("Chamando para front");}
+            //02 e 22
+            else if(checkCorrectCorner("02") && checkCorrectCorner("22")){ downCornersAlgorithm(moveList, "right"); System.out.println("Chamando para right");}
+            //20 e 22
+            else if(checkCorrectCorner("20") && checkCorrectCorner("22")){ downCornersAlgorithm(moveList, "back"); System.out.println("Chamando para back");}
+            //00 e 20
+            else if(checkCorrectCorner("00") && checkCorrectCorner("20")){ downCornersAlgorithm(moveList, "left"); System.out.println("Chamando para left");}
+
+            //Se os cantos corretos forem diagonais
+            else {downCornersAlgorithm(moveList, "front");System.out.println("Chamando para front diagonal");}
+        }
+        System.out.println("Cantos inferiores resolvidos com sucesso");
+        return true;
+    }
+    //Algoritmo para arrumar os cantos de baixo
+    private void downCornersAlgorithm(List<String> moveList, String dir){
+        if(dir == "front"){
+            //L' F L' B B L F' L' B B L L D'
+            cube.rotate(cube,"L'"); cube.rotate(cube,"F "); cube.rotate(cube,"L'"); cube.rotate(cube,"B "); cube.rotate(cube,"B ");
+            cube.rotate(cube,"L "); cube.rotate(cube,"F'"); cube.rotate(cube,"L'"); cube.rotate(cube,"B "); cube.rotate(cube,"B ");
+            cube.rotate(cube,"L "); cube.rotate(cube,"L "); cube.rotate(cube,"D'");
+            moveList.add("L'"); moveList.add("F "); moveList.add("L'"); moveList.add("B "); moveList.add("B "); moveList.add("L ");
+            moveList.add("F'"); moveList.add("L'"); moveList.add("B "); moveList.add("B "); moveList.add("L "); moveList.add("L ");
+            moveList.add("D'");
+        }
+        else if(dir == "left"){
+            //B' L B' R' R' B L' B' R' R' B B D'
+            cube.rotate(cube,"B'"); cube.rotate(cube,"L "); cube.rotate(cube,"B'"); cube.rotate(cube,"R'"); cube.rotate(cube,"R'");
+            cube.rotate(cube,"B "); cube.rotate(cube,"L'"); cube.rotate(cube,"B'"); cube.rotate(cube,"R'"); cube.rotate(cube,"R'");
+            cube.rotate(cube,"B "); cube.rotate(cube,"B "); cube.rotate(cube,"D'");
+            moveList.add("B'"); moveList.add("L "); moveList.add("B'"); moveList.add("R'"); moveList.add("R'"); moveList.add("B ");
+            moveList.add("L'"); moveList.add("B'"); moveList.add("R'"); moveList.add("R'"); moveList.add("B "); moveList.add("B ");
+            moveList.add("D'");
+        }
+        else if(dir == "back"){
+            //R' B R' F F R B' R' F F R R D'
+            cube.rotate(cube,"R'"); cube.rotate(cube,"B "); cube.rotate(cube,"R'"); cube.rotate(cube,"F "); cube.rotate(cube,"F ");
+            cube.rotate(cube,"R "); cube.rotate(cube,"B'"); cube.rotate(cube,"R'"); cube.rotate(cube,"F "); cube.rotate(cube,"F ");
+            cube.rotate(cube,"R "); cube.rotate(cube,"R "); cube.rotate(cube,"D'");
+            moveList.add("R'"); moveList.add("B "); moveList.add("R'"); moveList.add("F "); moveList.add("F "); moveList.add("R ");
+            moveList.add("B'"); moveList.add("R'"); moveList.add("F "); moveList.add("F "); moveList.add("R "); moveList.add("R ");
+            moveList.add("D'");
+        }
+        else if(dir == "right"){
+            //F' R F' L L F R' F' L L F F D'
+            cube.rotate(cube,"F'"); cube.rotate(cube,"R "); cube.rotate(cube,"F'"); cube.rotate(cube,"L "); cube.rotate(cube,"L ");
+            cube.rotate(cube,"F "); cube.rotate(cube,"R'"); cube.rotate(cube,"F'"); cube.rotate(cube,"L "); cube.rotate(cube,"L ");
+            cube.rotate(cube,"F "); cube.rotate(cube,"F "); cube.rotate(cube,"D'");
+            moveList.add("F'"); moveList.add("R "); moveList.add("F'"); moveList.add("L "); moveList.add("L "); moveList.add("F ");
+            moveList.add("R'"); moveList.add("F'"); moveList.add("L "); moveList.add("L "); moveList.add("F "); moveList.add("F ");
+            moveList.add("D'");
+        }
+    }
+    //Checa se um canto esta corretos (olha de ponto cabeca na frente)
+    private boolean checkCorrectCorner(String corner){
+        if(corner == "00"){
+            if(cube.right.symbols[2][2] == cube.right.symbols[1][1] && cube.back.symbols[2][0] == cube.back.symbols[1][1]) return true;
+            return false;
+        }
+        else if(corner == "02"){
+            if(cube.back.symbols[2][2] == cube.back.symbols[1][1] && cube.left.symbols[2][0] == cube.left.symbols[1][1]) return true;
+            return false;
+        }
+        else if(corner == "22"){
+            if(cube.left.symbols[2][2] == cube.left.symbols[1][1] && cube.front.symbols[2][0] == cube.front.symbols[1][1]) return true;
+            return false;
+        }
+        else if(corner == "20"){
+            if(cube.front.symbols[2][2] == cube.front.symbols[1][1] && cube.right.symbols[2][0] == cube.right.symbols[1][1]) return true;
+            return false;
+        }
+        return false;
+    }
+    //Conta quantos cantos estao corretos
+    private int countCorrectCorners(){
+        int resp = 0;
+        if(checkCorrectCorner("00")) resp++;
+        if(checkCorrectCorner("02")) resp++;
+        if(checkCorrectCorner("22")) resp++;
+        if(checkCorrectCorner("20")) resp++;
+
+        return resp;
+    }
+
+    //Arruma as pecas de meio da face de baixo
+    private boolean solveDownEdges(List<String> moveList){
+        System.out.println("Resolvendo meios da face de baixo...");
+        while(countCorrectEdges() != 4){
+            //se nao tem pecas corretas
+            if(countCorrectEdges() == 0) downEdgesAlgorithm(moveList, "front", true);
+            //se a peca correta eh a de tras
+            else if(checkCorrectEdge("back")){
+                if(cube.front.symbols[2][1] == cube.left.symbols[1][1]) downEdgesAlgorithm(moveList, "front", false);
+                else if(cube.front.symbols[2][1] == cube.right.symbols[1][1]) downEdgesAlgorithm(moveList, "front", true);
+            }
+            //se a peca correta eh a da direita
+            else if(checkCorrectEdge("right")){
+                if(cube.left.symbols[2][1] == cube.back.symbols[1][1]) downEdgesAlgorithm(moveList, "left", false);
+                else if(cube.left.symbols[2][1] == cube.front.symbols[1][1]) downEdgesAlgorithm(moveList, "left", true);
+            }
+            //Se a peca correta eh a da frente
+            else if(checkCorrectEdge("front")){
+                if(cube.back.symbols[2][1] == cube.right.symbols[1][1]) downEdgesAlgorithm(moveList, "back", false);
+                else if(cube.back.symbols[2][1] == cube.left.symbols[1][1]) downEdgesAlgorithm(moveList, "back", true);
+            }
+            //se a peca correta eh a da esquerda
+            else if(checkCorrectEdge("left")){
+                if(cube.right.symbols[2][1] == cube.front.symbols[1][1]) downEdgesAlgorithm(moveList, "right", false);
+                else if(cube.right.symbols[2][1] == cube.back.symbols[1][1]) downEdgesAlgorithm(moveList, "right", true);
+            }
+        }
+        System.out.println("Meios da face de baixo resolvidos com sucesso");
+        return true;
+    }
+    //Algoritmo para trocar meios da face de baixo
+    private void downEdgesAlgorithm(List<String> moveList, String dir, boolean clockWise){
+        if(dir == "front"){
+            //F F D/D' R L' F F R' L D/D' F F
+            cube.rotate(cube, "F "); cube.rotate(cube, "F ");
+            if(clockWise) cube.rotate(cube, "D "); else cube.rotate(cube, "D'");
+            cube.rotate(cube, "R "); cube.rotate(cube, "L'"); cube.rotate(cube, "F ");
+            cube.rotate(cube, "F "); cube.rotate(cube, "R'"); cube.rotate(cube, "L ");
+            if(clockWise) cube.rotate(cube, "D "); else cube.rotate(cube, "D'");
+            cube.rotate(cube, "F "); cube.rotate(cube, "F ");
+            moveList.add("F "); moveList.add("F ");
+            if(clockWise) moveList.add("D "); else moveList.add("D'");
+            moveList.add("R "); moveList.add("L'"); moveList.add("F "); moveList.add("F ");
+            moveList.add("R'"); moveList.add("L ");
+            if(clockWise) moveList.add("D "); else moveList.add("D'"); moveList.add("F ");
+            moveList.add("F ");
+        }
+        else if(dir == "left"){
+            //L L D/D' F B' L L F' B D/D' LL
+            cube.rotate(cube, "L "); cube.rotate(cube, "L ");
+            if(clockWise) cube.rotate(cube, "D "); else cube.rotate(cube, "D'");
+            cube.rotate(cube, "F "); cube.rotate(cube, "B'"); cube.rotate(cube, "L ");
+            cube.rotate(cube, "L "); cube.rotate(cube, "F'"); cube.rotate(cube, "B ");
+            if(clockWise) cube.rotate(cube, "D "); else cube.rotate(cube, "D'");
+            cube.rotate(cube, "L "); cube.rotate(cube, "L ");
+            moveList.add("L "); moveList.add("L ");
+            if(clockWise) moveList.add("D "); else moveList.add("D'");
+            moveList.add("F "); moveList.add("B'"); moveList.add("L "); moveList.add("L ");
+            moveList.add("F'"); moveList.add("B ");
+            if(clockWise) moveList.add("D "); else moveList.add("D'"); moveList.add("L ");
+            moveList.add("L ");
+        }
+        else if(dir == "back"){
+            //B B D/D' L R' B B L' R D/D' B B
+            cube.rotate(cube, "B "); cube.rotate(cube, "B ");
+            if(clockWise) cube.rotate(cube, "D "); else cube.rotate(cube, "D'");
+            cube.rotate(cube, "L "); cube.rotate(cube, "R'"); cube.rotate(cube, "B ");
+            cube.rotate(cube, "B "); cube.rotate(cube, "L'"); cube.rotate(cube, "R ");
+            if(clockWise) cube.rotate(cube, "D "); else cube.rotate(cube, "D'");
+            cube.rotate(cube, "B "); cube.rotate(cube, "B ");
+            moveList.add("B "); moveList.add("B ");
+            if(clockWise) moveList.add("D "); else moveList.add("D'");
+            moveList.add("L "); moveList.add("R'"); moveList.add("B "); moveList.add("B ");
+            moveList.add("L'"); moveList.add("R ");
+            if(clockWise) moveList.add("D "); else moveList.add("D'"); moveList.add("B ");
+            moveList.add("B ");
+        }
+        else if(dir == "right"){
+            //R R D/D' B F' R R B' F D/D' R R
+            cube.rotate(cube, "R "); cube.rotate(cube, "R ");
+            if(clockWise) cube.rotate(cube, "D "); else cube.rotate(cube, "D'");
+            cube.rotate(cube, "B "); cube.rotate(cube, "F'"); cube.rotate(cube, "R ");
+            cube.rotate(cube, "R "); cube.rotate(cube, "B'"); cube.rotate(cube, "F ");
+            if(clockWise) cube.rotate(cube, "D "); else cube.rotate(cube, "D'");
+            cube.rotate(cube, "R "); cube.rotate(cube, "R ");
+            moveList.add("R "); moveList.add("R ");
+            if(clockWise) moveList.add("D "); else moveList.add("D'");
+            moveList.add("B "); moveList.add("F'"); moveList.add("R "); moveList.add("R ");
+            moveList.add("B'"); moveList.add("F ");
+            if(clockWise) moveList.add("D "); else moveList.add("D'"); moveList.add("R ");
+            moveList.add("R ");
+        }
+    }
+    //Checa se uma peca de meio estao corretas
+    private boolean checkCorrectEdge(String edge){
+        if(edge == "front" && cube.front.symbols[2][1] == cube.front.symbols[1][1]) return true;
+        if(edge == "left" && cube.left.symbols[2][1] == cube.left.symbols[1][1]) return true;
+        if(edge == "back" && cube.back.symbols[2][1] == cube.back.symbols[1][1]) return true;
+        if(edge == "right" && cube.right.symbols[2][1] == cube.right.symbols[1][1]) return true;
+        return false;
+    }
+    //Conta quantas pecas de meio estao corretas
+    private int countCorrectEdges(){
+        int resp = 0;
+        if(checkCorrectEdge("front")) resp++;
+        if(checkCorrectEdge("left")) resp++;
+        if(checkCorrectEdge("back")) resp++;
+        if(checkCorrectEdge("right")) resp++;
+        return resp;
     }
 }
