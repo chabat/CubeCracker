@@ -1,3 +1,9 @@
+/*
+Classe que representa uma das faces do cubo
+
+author: Felipe Chabatura Neto (felipechabat at gmail.com)
+*/
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;

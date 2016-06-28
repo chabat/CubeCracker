@@ -1,3 +1,9 @@
+/*
+Classe do menu de cores utilizado para colorir o cubo
+
+author: Felipe Chabatura Neto (felipechabat at gmail.com)
+*/
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;

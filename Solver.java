@@ -1,3 +1,9 @@
+/*
+Classe do algoritmo que soluciona o cubo
+
+author: Felipe Chabatura Neto (felipechabat at gmail.com)
+*/
+
 import java.util.List;
 
 public class Solver{
@@ -17,6 +23,9 @@ public class Solver{
         if (!solveDownFace(moveList)) return false;
         if (!solveDownCorners(moveList)) return false;
         if (!solveDownEdges(moveList)) return false;
+
+        for(int i = moveList.size() - 1; i >= 0; i--)
+            cube.rotate(cube, cube.reverse(moveList.get(i)));
 
         cube.update();
         return true;
@@ -794,7 +803,7 @@ public class Solver{
             //D' R' D R D F D' F'
             cube.rotate(cube, "D'"); cube.rotate(cube, "R'"); cube.rotate(cube, "D "); cube.rotate(cube, "R ");
             cube.rotate(cube, "D "); cube.rotate(cube, "F "); cube.rotate(cube, "D'"); cube.rotate(cube, "F'");
-            moveList.add("D'"); moveList.add("R'"); moveList.add("D"); moveList.add("R "); moveList.add("D ");
+            moveList.add("D'"); moveList.add("R'"); moveList.add("D "); moveList.add("R "); moveList.add("D ");
             moveList.add("F "); moveList.add("D'"); moveList.add("F'");
         }
     }

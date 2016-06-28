@@ -1,3 +1,9 @@
+/*
+Classe da logica das rotacoes do cubo
+
+author: Felipe Chabatura Neto (felipechabat at gmail.com)
+*/
+
 public abstract class Rotations{
 
     //Copia uma linha do cubo para outra
@@ -50,6 +56,25 @@ public abstract class Rotations{
             //Arruma os "meios"
             face[1][0] = tmp[0][1]; face[1][2] = tmp[2][1];
         }
+    }
+    //Da o movimento reverso do movimento selecionado
+    public static String reverse(String move){
+        if(move == "R ") return "R'";
+        else if(move == "R'") return "R ";
+        else if(move == "L ") return "L'";
+        else if(move == "L'") return "L ";
+
+        else if(move == "U ") return "U'";
+        else if(move == "U'") return "U ";
+        else if(move == "D ") return "D'";
+        else if(move == "D'") return "D ";
+
+        else if(move == "F ") return "F'";
+        else if(move == "F'") return "F ";
+        else if(move == "B ") return "B'";
+        else if(move == "B'") return "B ";
+
+        return "";
     }
 
     public static void rotate(Cube cube, String direction){

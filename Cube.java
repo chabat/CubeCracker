@@ -1,3 +1,9 @@
+/*
+Classe que representa o cubo
+
+author: Felipe Chabatura Neto (felipechabat at gmail.com)
+*/
+
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 

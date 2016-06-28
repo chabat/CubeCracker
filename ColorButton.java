@@ -1,3 +1,8 @@
+/*
+Classe dos botoes coloridos usados para o cubo, menu de cores e outros botoes
+
+author: Felipe Chabatura Neto (felipechabat at gmail.com)
+*/
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
